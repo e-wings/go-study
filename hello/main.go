@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"reflect"
+	"go-tools/form"
 )
 
 func main() {
-	var a float32 = 3.0
-	b := float64(a)
-	fmt.Println(reflect.TypeOf(b))
+	fmt.Println(form.InRange(1, []int{0, 1, 2, 3}))
+	fmt.Println(form.InRange(3.14, []float64{0, 1, 2.1, 3.141}))
+	fmt.Println(form.InRange("apple2", []string{"apple", "tree", "sss"}))
 }
