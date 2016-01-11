@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-tools/form"
+	"go-tools/eform"
 	"html/template"
 	"log"
 	"net/http"
@@ -58,56 +58,56 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 		//=========== 中文 ===========
 		if r.Form.Get("name-cn") != "" {
-			if m, _ := form.IsFormat(r.Form.Get("name-cn"), "cn"); !m {
+			if m, _ := eform.IsFormat(r.Form.Get("name-cn"), "cn"); !m {
 				fmt.Println("中文姓名必须由中文字符构成")
 			}
 		}
 
 		//=========== 英文（允许出现空格） ===========
 		if r.Form.Get("name-en") != "" {
-			if m, _ := form.IsFormat(r.Form.Get("name-en"), "en"); !m {
+			if m, _ := eform.IsFormat(r.Form.Get("name-en"), "en"); !m {
 				fmt.Println("英文姓名必须由英文字母构成")
 			}
 		}
 
 		//=========== 电子邮件地址 ===========
 		if r.Form.Get("email") != "" {
-			if m, _ := form.IsFormat(r.Form.Get("email"), "email"); !m {
+			if m, _ := eform.IsFormat(r.Form.Get("email"), "email"); !m {
 				fmt.Println("电子邮件地址不规范")
 			}
 		}
 
 		//=========== 手机号码 ===========
 		if r.Form.Get("mobile") != "" {
-			if m, _ := form.IsFormat(r.Form.Get("mobile"), "mobile"); !m {
+			if m, _ := eform.IsFormat(r.Form.Get("mobile"), "mobile"); !m {
 				fmt.Println("手机号码不规范")
 			}
 		}
 
 		//=========== 身份证号 ===========
 		if r.Form.Get("id-card") != "" {
-			if m, _ := form.IsFormat(r.Form.Get("id-card"), "idCard"); !m {
+			if m, _ := eform.IsFormat(r.Form.Get("id-card"), "idCard"); !m {
 				fmt.Println("身份证号不正确")
 			}
 		}
 
 		//=========== 单选按钮 ===========
 		if r.Form.Get("gender") != "" {
-			if m, _ := form.InRange(r.Form.Get("gender"), []string{"0", "1"}); !m {
+			if m, _ := eform.InRange(r.Form.Get("gender"), []string{"0", "1"}); !m {
 				fmt.Println("性别错误")
 			}
 		}
 
 		//=========== 多选按钮 ===========
 		if r.Form.Get("interest") != "" {
-			if m, _ := form.RangeInRange(r.Form["interest"], []string{"football", "basketball", "tennis"}); !m {
+			if m, _ := eform.RangeInRange(r.Form["interest"], []string{"football", "basketball", "tennis"}); !m {
 				fmt.Println("喜爱的运动错误")
 			}
 		}
 
 		//=========== 下拉菜单 ===========
 		if r.Form.Get("fruit") != "" {
-			if m, _ := form.InRange(r.Form.Get("fruit"), []string{"0", "1", "2"}); !m {
+			if m, _ := eform.InRange(r.Form.Get("fruit"), []string{"0", "1", "2"}); !m {
 				fmt.Println("最喜欢的水果超出范围")
 			}
 		}

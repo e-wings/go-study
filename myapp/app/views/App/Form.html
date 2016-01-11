@@ -1,0 +1,13 @@
+{{set . "title" "Form"}}
+{{template "header.html" .}}
+
+<h1>Forms</h1>
+
+<form method="post" target="/form">
+	username: <input type="text" name="username">
+	password:<input type="text" name="password">
+	<input type="submit">
+</form>
+
+
+{{template "footer.html" .}}
