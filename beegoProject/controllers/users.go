@@ -4,6 +4,7 @@ import (
 	"beegoProject/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -25,12 +26,12 @@ func (c *UsersController) URLMapping() {
 
 // @Title Post
 // @Description create Users
-// @Param	body		body 	models.Users	true		"body for Users content"
-// @Success 201 {int} models.Users
+// @Param	body		body 	models.Iusersi	true		"body for Users content"
+// @Success 201 {int} models.Iusersi
 // @Failure 403 body is empty
 // @router / [post]
 func (c *UsersController) Post() {
-	var v models.Users
+	var v models.Iusersi
 	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 	if _, err := models.AddUsers(&v); err == nil {
 		c.Ctx.Output.SetStatus(201)
@@ -44,7 +45,7 @@ func (c *UsersController) Post() {
 // @Title Get
 // @Description get Users by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Users
+// @Success 200 {object} models.Iusersi
 // @Failure 403 :id is empty
 // @router /:id [get]
 func (c *UsersController) GetOne() {
@@ -68,7 +69,10 @@ func (c *UsersController) Get() {
 	} else {
 		c.Data["json"] = v
 	}
-	c.ServeJson()
+	c.Data["id"] = v.Id
+	c.Data["username"] = v.Username
+	c.Data["age"] = v.Age
+	c.TplNames = "users/show.tpl"
 }
 
 // @Title Get All
@@ -79,7 +83,7 @@ func (c *UsersController) Get() {
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.Users
+// @Success 200 {object} models.Iusersi
 // @Failure 403
 // @router / [get]
 func (c *UsersController) GetAll() {
@@ -136,15 +140,17 @@ func (c *UsersController) GetAll() {
 // @Title Update
 // @Description update the Users
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Users	true		"body for Users content"
-// @Success 200 {object} models.Users
+// @Param	body		body 	models.Iusersi	true		"body for Users content"
+// @Success 200 {object} models.Iusersi
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *UsersController) Put() {
 	idStr := c.Ctx.Input.Params[":id"]
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v := models.Users{Id: id}
+	v := models.Iusersi{Id: id}
+	fmt.Println(v)
 	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	fmt.Println(v)
 	if err := models.UpdateUsersById(&v); err == nil {
 		c.Data["json"] = "OK"
 	} else {

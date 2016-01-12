@@ -9,20 +9,19 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-type Users struct {
-	Id       int64
+type Iusersi struct {
+	Id       int64  `beedb:"PK"`
 	Username string `orm:"size(128)"`
 	Age      int
 }
 
 func init() {
-	orm.RegisterDataBase("default", "mysql", "root@/beego_test", 30)
-	orm.RegisterModel(new(Users))
+	orm.RegisterModel(new(Iusersi))
 }
 
 // AddUsers insert a new Users into database and returns
 // last inserted Id on success.
-func AddUsers(m *Users) (id int64, err error) {
+func AddUsers(m *Iusersi) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -30,9 +29,9 @@ func AddUsers(m *Users) (id int64, err error) {
 
 // GetUsersById retrieves Users by Id. Returns error if
 // Id doesn't exist
-func GetUsersById(id int64) (v *Users, err error) {
+func GetUsersById(id int64) (v *Iusersi, err error) {
 	o := orm.NewOrm()
-	v = &Users{Id: id}
+	v = &Iusersi{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
@@ -44,7 +43,7 @@ func GetUsersById(id int64) (v *Users, err error) {
 func GetAllUsers(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Users))
+	qs := o.QueryTable(new(Iusersi))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -90,7 +89,7 @@ func GetAllUsers(query map[string]string, fields []string, sortby []string, orde
 		}
 	}
 
-	var l []Users
+	var l []Iusersi
 	qs = qs.OrderBy(sortFields...)
 	if _, err := qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -115,9 +114,9 @@ func GetAllUsers(query map[string]string, fields []string, sortby []string, orde
 
 // UpdateUsers updates Users by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateUsersById(m *Users) (err error) {
+func UpdateUsersById(m *Iusersi) (err error) {
 	o := orm.NewOrm()
-	v := Users{Id: m.Id}
+	v := Iusersi{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -132,11 +131,11 @@ func UpdateUsersById(m *Users) (err error) {
 // the record to be deleted doesn't exist
 func DeleteUsers(id int64) (err error) {
 	o := orm.NewOrm()
-	v := Users{Id: id}
+	v := Iusersi{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&Users{Id: id}); err == nil {
+		if num, err = o.Delete(&Iusersi{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
