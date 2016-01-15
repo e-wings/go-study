@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego/toolbox"
 	"strconv"
 	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 // oprations for Users
@@ -61,6 +62,18 @@ func (c *UsersController) GetOne() {
 }
 
 func (c *UsersController) Get() {
+
+	o := orm.NewOrm()
+	user := new(models.Iusersi)
+	o.QueryTable("iusersi").Filter("username__exact", "aaaa").One(user)
+	Display(user)
+
+	var users []*models.Iusersi
+	o.QueryTable("iusersi").Filter("username__exact", "aaaa").All(&users)
+	for _, u := range users {
+		fmt.Println(u)
+	}
+
 	idStr := c.Ctx.Input.Params[":id"]
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v, err := models.GetUsersById(id)

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 )
 
@@ -13,5 +14,11 @@ func (c *FormController) Get() {
 }
 
 func (c *FormController) Post() {
-	c.SaveToFile("uploadname", "/www/uploaded_file.txt")
+	f, h, err := c.GetFile("uploadname")
+	defer f.Close()
+	if err != nil {
+		fmt.Println("getfile err ", err)
+	} else {
+		c.SaveToFile("uploadname", "/www/"+h.Filename)
+	}
 }
