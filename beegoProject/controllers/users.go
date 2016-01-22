@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"github.com/astaxie/beego/toolbox"
+	"github.com/astaxie/beego/utils"
 	"strconv"
 	"strings"
 )
@@ -40,7 +40,7 @@ func (c *UsersController) Post() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
-	c.ServeJson()
+	c.ServeJSON()
 }
 
 // @Title Get
@@ -50,7 +50,7 @@ func (c *UsersController) Post() {
 // @Failure 403 :id is empty
 // @router /:id [get]
 func (c *UsersController) GetOne() {
-	idStr := c.Ctx.Input.Params[":id"]
+	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v, err := models.GetUsersById(id)
 	if err != nil {
@@ -58,7 +58,7 @@ func (c *UsersController) GetOne() {
 	} else {
 		c.Data["json"] = v
 	}
-	c.ServeJson()
+	c.ServeJSON()
 }
 
 func (c *UsersController) Get() {
@@ -66,7 +66,8 @@ func (c *UsersController) Get() {
 	o := orm.NewOrm()
 	user := new(models.Iusersi)
 	o.QueryTable("iusersi").Filter("username__exact", "aaaa").One(user)
-	Display(user)
+	//aa := []string{"1", "a"}
+	utils.Display("v1", 1, "v2", 2, "v3", user)
 
 	var users []*models.Iusersi
 	o.QueryTable("iusersi").Filter("username__exact", "aaaa").All(&users)
@@ -74,7 +75,7 @@ func (c *UsersController) Get() {
 		fmt.Println(u)
 	}
 
-	idStr := c.Ctx.Input.Params[":id"]
+	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v, err := models.GetUsersById(id)
 	if err != nil {
@@ -85,7 +86,7 @@ func (c *UsersController) Get() {
 	c.Data["id"] = v.Id
 	c.Data["username"] = v.Username
 	c.Data["age"] = v.Age
-	c.TplNames = "users/show.tpl"
+	c.TplName = "users/show.tpl"
 }
 
 // @Title Get All
@@ -133,7 +134,7 @@ func (c *UsersController) GetAll() {
 			kv := strings.Split(cond, ":")
 			if len(kv) != 2 {
 				c.Data["json"] = errors.New("Error: invalid query key/value pair")
-				c.ServeJson()
+				c.ServeJSON()
 				return
 			}
 			k, v := kv[0], kv[1]
@@ -147,7 +148,7 @@ func (c *UsersController) GetAll() {
 	} else {
 		c.Data["json"] = l
 	}
-	c.ServeJson()
+	c.ServeJSON()
 }
 
 // @Title Update
@@ -158,7 +159,7 @@ func (c *UsersController) GetAll() {
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *UsersController) Put() {
-	idStr := c.Ctx.Input.Params[":id"]
+	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	v := models.Iusersi{Id: id}
 	fmt.Println(v)
@@ -169,7 +170,7 @@ func (c *UsersController) Put() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
-	c.ServeJson()
+	c.ServeJSON()
 }
 
 // @Title Delete
@@ -179,12 +180,12 @@ func (c *UsersController) Put() {
 // @Failure 403 id is empty
 // @router /:id [delete]
 func (c *UsersController) Delete() {
-	idStr := c.Ctx.Input.Params[":id"]
+	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
 	if err := models.DeleteUsers(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()
 	}
-	c.ServeJson()
+	c.ServeJSON()
 }

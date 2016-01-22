@@ -9,16 +9,16 @@
 // )
 
 // func main() {
-// 	beego.EnableAdmin = true
-// 	beego.EnableXSRF = true
-// 	beego.XSRFKEY = "61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o"
-// 	beego.XSRFExpire = 3600 //过期时间，默认60秒
+// 	beego.BConfig.Listen.AdminEnable = true
+// 	beego.BConfig.WebConfig.EnableXSRF = true
+// 	beego.BConfig.WebConfig.XSRFKey = "61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o"
+// 	beego.BConfig.WebConfig.XSRFExpire = 3600 //过期时间，默认60秒
 // 	beego.Run()
 // }
 
 // func init() {
 // 	fmt.Println("=====================")
-// 	orm.RegisterDriver("mysql", orm.DR_MySQL)
+// 	orm.RegisterDriver("mysql", orm.DRMySQL)
 // 	err := orm.RegisterDataBase("default", "mysql", "root@tcp(localhost:3306)/beego_test", 30)
 // 	fmt.Println(err)
 // 	//beego.error()
@@ -56,7 +56,7 @@ func main() {
 	user.Age = 36
 	num, err := o.Update(&user)
 	fmt.Printf("Num:%d ,ERR: %v\n", num, err)
-	//beego.StaticDir["/upload"] = "upload"
+	//beego.BConfig.WebConfig.StaticDir["/upload"] = "upload"
 	beego.SetStaticPath("/upload", "upload")
 	beego.Run()
 

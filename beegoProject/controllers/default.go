@@ -12,5 +12,5 @@ func (c *MainController) Get() {
 	c.Data["Website"] = "beego.me"
 	c.Data["Email"] = "astaxie@gmail.com"
 	c.Data["Name"] = "吴宇"
-	c.TplNames = "index.tpl"
+	c.TplName = "index.tpl"
 }
