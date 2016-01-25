@@ -18,7 +18,7 @@ func main() {
 		orm.RunSyncdb("default", false, false)
 	} else {
 		orm.Debug = true
-		orm.RunSyncdb("default", false, false)
+		orm.RunSyncdb("default", false, true)
 	}
 
 	beego.Run()

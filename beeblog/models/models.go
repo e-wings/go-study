@@ -37,7 +37,7 @@ type Topic struct {
 	Updated         time.Time `orm:"index"`
 	Views           int64
 	Author          string
-	ReplyTime       time.Time `orm:"index"`
+	ReplyTime       time.Time `orm:"null"`
 	ReplyCount      int64
 	ReplyLastUserId int64
 }
@@ -77,6 +77,12 @@ func GetAllCategories() ([]*Category, error) {
 	return cates, err
 }
 
+func GetAllTopics() ([]*Topic, error) {
+	o := orm.NewOrm()
+	topics := make([]*Topic, 0)
+	qs := o.QueryTable("topic")
+}
+
 func DeleteCategory(id string) error {
 	cid, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
@@ -85,5 +91,16 @@ func DeleteCategory(id string) error {
 	cate := &Category{Id: cid}
 	o := orm.NewOrm()
 	_, err = o.Delete(cate)
+	return err
+}
+
+func AddTopic(title, content string) error {
+	topic := &Topic{Title: title,
+		Content: content,
+		Created: time.Now(),
+		Updated: time.Now(),
+	}
+	o := orm.NewOrm()
+	_, err := o.Insert(topic)
 	return err
 }
