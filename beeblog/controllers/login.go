@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"math"
@@ -44,17 +43,8 @@ func (c *LoginController) Post() {
 }
 
 func checkAccount(ctx *context.Context) bool {
-	ck, err := ctx.Request.Cookie("uname")
-	if err != nil {
-		return false
-	}
-	uname := ck.Value
-	ck, err = ctx.Request.Cookie("pwd")
-	if err != nil {
-		return false
-	}
-	pwd := ck.Value
-	fmt.Println(ck, err)
+	uname := ctx.GetCookie("uname")
+	pwd := ctx.GetCookie("pwd")
 
 	if uname == beego.AppConfig.String("adminName") &&
 		pwd == beego.AppConfig.String("adminPass") {
