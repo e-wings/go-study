@@ -11,7 +11,9 @@
 		
 		<div class="container">
 			{{with .Topic}}
+			<p>{{.Category.Title}}</p>
 			<h1>{{.Title}}</h1>
+			<p><a href="/topic/modify?tid={{.Id}}" class="btn btn-default">修改文章</a></p>
 			{{.Content}}
 			{{end}}
 		</div>

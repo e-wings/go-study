@@ -3,6 +3,7 @@ package models
 import (
 	//"fmt"
 	"errors"
+	//"fmt"
 	"github.com/Unknwon/com"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/mattn/go-sqlite3"
@@ -25,6 +26,7 @@ type Category struct {
 	TopicTime       time.Time `orm:"index"`
 	TopicCount      int64
 	TopicLastUserId int64
+	Topic           []*Topic `orm:"reverse(many)"`
 }
 
 type Topic struct {
@@ -33,6 +35,7 @@ type Topic struct {
 	Title           string
 	Content         string `orm:"size(5000)"`
 	Attachment      string
+	Category        *Category `orm:"rel(fk)"`
 	Created         time.Time `orm:"index"`
 	Updated         time.Time `orm:"index"`
 	Views           int64
@@ -77,12 +80,6 @@ func GetAllCategories() ([]*Category, error) {
 	return cates, err
 }
 
-func GetAllTopics() ([]*Topic, error) {
-	o := orm.NewOrm()
-	topics := make([]*Topic, 0)
-	qs := o.QueryTable("topic")
-}
-
 func DeleteCategory(id string) error {
 	cid, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
@@ -94,13 +91,83 @@ func DeleteCategory(id string) error {
 	return err
 }
 
-func AddTopic(title, content string) error {
+func AddTopic(title, content, category string) error {
+	// cid, err := strconv.ParseInt(category, 10, 64)
+	// if err != nil {
+	// 	return err
+	// }
 	topic := &Topic{Title: title,
 		Content: content,
 		Created: time.Now(),
 		Updated: time.Now(),
+		//Category: cid,
 	}
 	o := orm.NewOrm()
 	_, err := o.Insert(topic)
+	return err
+}
+
+func GetAllTopics(isDesc bool) ([]*Topic, error) {
+	topics := make([]*Topic, 0)
+	o := orm.NewOrm()
+	qs := o.QueryTable("topic")
+	var err error
+	if isDesc {
+		_, err = qs.OrderBy("-created").RelatedSel().All(&topics)
+	} else {
+		_, err = qs.All(&topics)
+	}
+	return topics, err
+}
+
+func DeleteTopic(tid string) error {
+	id, err := strconv.ParseInt(tid, 10, 32)
+	if err != nil {
+		return err
+	}
+	topic := Topic{Id: id}
+	o := orm.NewOrm()
+	_, err = o.Delete(&topic)
+	return err
+}
+
+func ShowTopic(id string) (*Topic, error) {
+	tid, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	topic := &Topic{}
+	o := orm.NewOrm()
+	qs := o.QueryTable("topic")
+	err = qs.Filter("id", tid).RelatedSel().One(topic)
+	if err != nil {
+		return nil, err
+	}
+	topic.Views++
+	_, err = o.Update(topic)
+	return topic, err
+}
+
+func ModifyTopic(id, title, content, category string) error {
+	tid, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return err
+	}
+	// cid, err := strconv.ParseInt(category, 10, 64)
+	// if err != nil {
+	// 	return err
+	// }
+	topic := &Topic{}
+	o := orm.NewOrm()
+	qs := o.QueryTable("topic")
+	err = qs.Filter("id", tid).One(topic)
+	if err != nil {
+		return err
+	}
+	topic.Title = title
+	topic.Content = content
+	topic.Updated = time.Now()
+	//topic.Category = cid
+	_, err = o.Update(topic)
 	return err
 }
