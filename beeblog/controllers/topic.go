@@ -15,7 +15,7 @@ func (c *TopicController) Get() {
 	c.TplName = "topic.html"
 	c.Data["IsTopic"] = true
 	var err error
-	c.Data["Topics"], err = models.GetAllTopics(true)
+	c.Data["Topics"], err = models.GetAllTopics("", true)
 	fmt.Println(c.Data["Topics"])
 	if err != nil {
 		beego.Error(err)
@@ -90,10 +90,6 @@ func (c *TopicController) Delete() {
 func (c *TopicController) View() {
 	//确保已注册
 	c.Data["IsLogin"] = checkAccount(c.Ctx)
-	if c.Data["IsLogin"] == false {
-		c.Redirect("/login", 302)
-		return
-	}
 	c.Data["IsTopic"] = true
 	tid := c.Ctx.Input.Params()["0"]
 	if tid == "" {
