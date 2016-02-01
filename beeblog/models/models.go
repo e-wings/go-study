@@ -84,8 +84,10 @@ func AddCategory(name string) error {
 func GetAllCategories() ([]*Category, error) {
 	o := orm.NewOrm()
 	cates := make([]*Category, 0)
-	qs := o.QueryTable("category")
-	_, err := qs.All(&cates)
+	_, err := o.Raw("select cat.*, count(top.category_id) topic_count " +
+		"from category cat " +
+		"left join topic top on top.category_id = cat.id " +
+		"group by top.category_id").QueryRows(&cates)
 	return cates, err
 }
 
