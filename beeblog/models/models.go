@@ -3,7 +3,7 @@ package models
 import (
 	//"fmt"
 	"errors"
-	//"fmt"
+	"fmt"
 	"github.com/Unknwon/com"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/mattn/go-sqlite3"
@@ -43,6 +43,15 @@ type Topic struct {
 	ReplyTime       time.Time `orm:"null"`
 	ReplyCount      int64
 	ReplyLastUserId int64
+	Comment         []*Comment `orm:"reverse(many)"`
+}
+
+type Comment struct {
+	Id      int64
+	Name    string
+	Content string    `orm:"size(1000)"`
+	Created time.Time `orm:"index"`
+	Topic   *Topic    `orm:"rel(fk)"`
 }
 
 func RegisterDB() {
@@ -51,7 +60,7 @@ func RegisterDB() {
 		os.Create(_DB_NAME)
 	}
 
-	orm.RegisterModel(new(Category), new(Topic))
+	orm.RegisterModel(new(Category), new(Topic), new(Comment))
 	orm.RegisterDataBase("default", _SQLITE3_DRIVER, _DB_NAME, 10)
 }
 
@@ -107,11 +116,20 @@ func AddTopic(title, content, category string) error {
 	return err
 }
 
-func GetAllTopics(isDesc bool) ([]*Topic, error) {
+func GetAllTopics(cate_id string, isDesc bool) ([]*Topic, error) {
 	topics := make([]*Topic, 0)
 	o := orm.NewOrm()
 	qs := o.QueryTable("topic")
 	var err error
+	if len(cate_id) > 0 {
+		var cateIdNum int64
+		cateIdNum, err = strconv.ParseInt(cate_id, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		qs = qs.Filter("category_id", cateIdNum)
+	}
+
 	if isDesc {
 		_, err = qs.OrderBy("-created").RelatedSel().All(&topics)
 	} else {
@@ -140,11 +158,16 @@ func ShowTopic(id string) (*Topic, error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable("topic")
 	err = qs.Filter("id", tid).RelatedSel().One(topic)
+	_, err = o.LoadRelated(topic, "Comment")
+	fmt.Println("=============")
+	fmt.Println(topic.Comment)
+
 	if err != nil {
 		return nil, err
 	}
 	topic.Views++
 	_, err = o.Update(topic)
+
 	return topic, err
 }
 
@@ -170,4 +193,53 @@ func ModifyTopic(id, title, content, category string) error {
 	//topic.Category = cid
 	_, err = o.Update(topic)
 	return err
+}
+
+func AddReply(tid, nickname, content string) error {
+	tidNum, err := strconv.ParseInt(tid, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	topic := &Topic{}
+	o := orm.NewOrm()
+
+	qt := o.QueryTable("topic")
+	var topicNum int64
+	topicNum, err = qt.Filter("id", tidNum).All(topic)
+	if err != nil {
+		return err
+	}
+	if topicNum != 1 {
+		errors.New("没有唯一匹配的文章")
+	}
+	reply := &Comment{
+		Topic:   topic,
+		Name:    nickname,
+		Content: content,
+		Created: time.Now(),
+	}
+
+	_, err = o.Insert(reply)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteReply(tid, rid string) error {
+	// tidNum, err := strconv.ParseInt(tid, 10, 64)
+	// if err != nil {
+	// 	return err
+	// }
+	ridNum, err := strconv.ParseInt(rid, 10, 64)
+	if err != nil {
+		return err
+	}
+	reply := &Comment{
+		Id: ridNum,
+	}
+	o := orm.NewOrm()
+	_, err = o.Delete(reply)
+	return nil
 }
