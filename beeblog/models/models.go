@@ -44,6 +44,7 @@ type Topic struct {
 	ReplyCount      int64
 	ReplyLastUserId int64
 	Comment         []*Comment `orm:"reverse(many)"`
+	Categorytitle   string     `orm:"-"`
 }
 
 type Comment struct {
@@ -121,25 +122,34 @@ func AddTopic(title, content, category string) error {
 }
 
 func GetAllTopics(cate_id string, isDesc bool) ([]*Topic, error) {
+
 	topics := make([]*Topic, 0)
 	o := orm.NewOrm()
-	qs := o.QueryTable("topic")
-	var err error
-	if len(cate_id) > 0 {
-		var cateIdNum int64
-		cateIdNum, err = strconv.ParseInt(cate_id, 10, 64)
-		if err != nil {
-			return nil, err
-		}
-		qs = qs.Filter("category_id", cateIdNum)
-	}
-
-	if isDesc {
-		_, err = qs.OrderBy("-created").RelatedSel().All(&topics)
-	} else {
-		_, err = qs.All(&topics)
-	}
+	_, err := o.Raw("select top.*, count(com.id) comment_count , cat.title as Categorytitle " +
+		"from topic top " +
+		"left join comment com on com.topic_id = top.id " +
+		"left join category cat on cat.id = top.category_id " +
+		"group by top.id").QueryRows(&topics)
+	fmt.Println("======>", topics[0])
 	return topics, err
+
+	// qs := o.QueryTable("topic")
+	// var err error
+	// if len(cate_id) > 0 {
+	// 	var cateIdNum int64
+	// 	cateIdNum, err = strconv.ParseInt(cate_id, 10, 64)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	qs = qs.Filter("category_id", cateIdNum)
+	// }
+
+	// if isDesc {
+	// 	_, err = qs.OrderBy("-created").RelatedSel().All(&topics)
+	// } else {
+	// 	_, err = qs.All(&topics)
+	// }
+	// return topics, err
 }
 
 func DeleteTopic(tid string) error {
