@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"beeblog/models"
 	"fmt"
 	"github.com/astaxie/beego"
+	"go-study/beeblog/models"
 )
 
 type TopicController struct {
@@ -51,6 +51,7 @@ func (c *TopicController) Post() {
 	content := c.Input().Get("content")
 	id := c.Input().Get("tid")
 	category := c.Input().Get("category")
+	fmt.Println("===========>", category)
 
 	if title != "" && content != "" && category != "" {
 		if id == "" {

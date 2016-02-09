@@ -49,9 +49,9 @@ type Topic struct {
 type Comment struct {
 	Id      int64
 	Name    string
-	Content string    `orm:"size(1000)"`
-	Created time.Time `orm:"index"`
-	Topic   *Topic    `orm:"rel(fk)"`
+	Content string `orm:"size(1000)"`
+	Created string `orm:"index"`
+	Topic   *Topic `orm:"rel(fk)"`
 }
 
 func RegisterDB() {
@@ -87,7 +87,7 @@ func GetAllCategories() ([]*Category, error) {
 	_, err := o.Raw("select cat.*, count(top.category_id) topic_count " +
 		"from category cat " +
 		"left join topic top on top.category_id = cat.id " +
-		"group by top.category_id").QueryRows(&cates)
+		"group by cat.id").QueryRows(&cates)
 	return cates, err
 }
 
@@ -103,18 +103,20 @@ func DeleteCategory(id string) error {
 }
 
 func AddTopic(title, content, category string) error {
-	// cid, err := strconv.ParseInt(category, 10, 64)
-	// if err != nil {
-	// 	return err
-	// }
+	cid, err := strconv.ParseInt(category, 10, 64)
+	if err != nil {
+		return err
+	}
+	cat := &Category{Id: cid}
+
 	topic := &Topic{Title: title,
-		Content: content,
-		Created: time.Now(),
-		Updated: time.Now(),
-		//Category: cid,
+		Content:  content,
+		Created:  time.Now(),
+		Updated:  time.Now(),
+		Category: cat,
 	}
 	o := orm.NewOrm()
-	_, err := o.Insert(topic)
+	_, err = o.Insert(topic)
 	return err
 }
 
@@ -215,11 +217,12 @@ func AddReply(tid, nickname, content string) error {
 	if topicNum != 1 {
 		errors.New("没有唯一匹配的文章")
 	}
+
 	reply := &Comment{
 		Topic:   topic,
 		Name:    nickname,
 		Content: content,
-		Created: time.Now(),
+		Created: time.Now().Format("2006-01-02 15:04:05"),
 	}
 
 	_, err = o.Insert(reply)

@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"beeblog/controllers"
 	"github.com/astaxie/beego"
+	"go-study/beeblog/controllers"
 )
 
 func init() {

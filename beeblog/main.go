@@ -1,10 +1,10 @@
 package main
 
 import (
-	"beeblog/models"
-	_ "beeblog/routers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"go-study/beeblog/models"
+	_ "go-study/beeblog/routers"
 )
 
 func init() {
@@ -18,7 +18,7 @@ func main() {
 		orm.RunSyncdb("default", false, false)
 	} else {
 		orm.Debug = true
-		orm.RunSyncdb("default", false, true)
+		orm.RunSyncdb("default", false, false)
 	}
 
 	beego.Run()
