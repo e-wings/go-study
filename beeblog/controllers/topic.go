@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"beeblog/models"
 	"fmt"
 	"github.com/astaxie/beego"
+	"go-study/beeblog/models"
 )
 
 type TopicController struct {

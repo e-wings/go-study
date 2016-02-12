@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"beeblog/models"
 	"github.com/astaxie/beego"
+	"go-study/beeblog/models"
 )
 
 type ReplyController struct {

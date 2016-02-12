@@ -1,10 +1,10 @@
 package main
 
 import (
-	"beeblog/models"
-	_ "beeblog/routers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"go-study/beeblog/models"
+	_ "go-study/beeblog/routers"
 )
 
 func init() {

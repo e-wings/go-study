@@ -49,9 +49,9 @@ type Topic struct {
 type Comment struct {
 	Id      int64
 	Name    string
-	Content string    `orm:"size(1000)"`
-	Created time.Time `orm:"index"`
-	Topic   *Topic    `orm:"rel(fk)"`
+	Content string `orm:"size(1000)"`
+	Created string `orm:"index"`
+	Topic   *Topic `orm:"rel(fk)"`
 }
 
 func RegisterDB() {
@@ -217,7 +217,7 @@ func AddReply(tid, nickname, content string) error {
 		Topic:   topic,
 		Name:    nickname,
 		Content: content,
-		Created: time.Now(),
+		Created: time.Now().Format("2006-01-02 15:04:05"),
 	}
 
 	_, err = o.Insert(reply)
