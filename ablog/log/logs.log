@@ -1,3 +1,9 @@
 2016/02/12 23:32:45 [CategoryController.go:20][W] 类型名不能为空
 2016/02/12 23:37:55 [CategoryController.go:21][W] 类型名不能为空
 2016/02/12 23:39:27 [CategoryController.go:21][W] 类型名不能为空
+2016/02/13 22:14:46 [TopicController.go:34][W] 信息不全，无法新建文章。
+2016/02/13 22:17:24 [TopicController.go:34][W] 信息不全，无法新建文章。
+2016/02/13 22:19:20 [TopicController.go:38][W] <QuerySeter> no row found
+2016/02/13 22:23:22 [TopicController.go:38][W] <QuerySeter> no row found
+2016/02/13 22:49:25 [CategoryController.go:40][C] 未找到该Category
+2016/02/13 22:56:12 [CategoryController.go:40][C] 未找到该Category

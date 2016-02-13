@@ -32,6 +32,7 @@
 					<tr>
 						<th>#</th>
 						<th>分类名称</th>
+						<th>状态</th>
 						<th>文章数</th>
 						<th>操作</th>
 					</tr>
@@ -41,9 +42,21 @@
 					<tr>
 						<th>{{.Id}}</th>
 						<th>{{.Title}}</th>
+						<th>{{if eq .Status 1}}
+								激活
+							{{else}}
+								禁用
+							{{end}}
+						</th>
 						<th>{{.TopicCount}}</th>
 						<th>
-							<a href="/category?op=del&id={{.Id}}">删除</a>
+							<a href="/category?op=switch&id={{.Id}}&status={{.Status}}">
+								{{if eq .Status 1}}
+									禁用
+								{{else}}
+									激活
+								{{end}}
+							</a>
 						</th>
 					</tr>
 					{{end}}
